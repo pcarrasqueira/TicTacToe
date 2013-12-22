@@ -1,0 +1,19 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CC	Makefile	/^CC=gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS=-c -Wall$/;"	m
+COMMON_SORCES	Makefile	/^COMMON_SORCES=tictactoe.h$/;"	m
+EXECUTABLE1	Makefile	/^EXECUTABLE1=server$/;"	m
+EXECUTABLE2	Makefile	/^EXECUTABLE2=client$/;"	m
+NAME_SIZE	server.c	6;"	d	file:
+OBJECT1	Makefile	/^OBJECT1=$(SOURCE1:.c=.o)$/;"	m
+OBJECT2	Makefile	/^OBJECT2=$(SOURCE2:.c=.o)$/;"	m
+SOURCE1	Makefile	/^SOURCE1=server.c$/;"	m
+SOURCE2	Makefile	/^SOURCE2=client.c$/;"	m
+dostuff	server.c	/^void dostuff (int sock) {$/;"	f
+main	client.c	/^int main (int argc,char *argv[] ) {$/;"	f
+main	server.c	/^int main(int argc, char *argv[]) {$/;"	f
