@@ -9,11 +9,17 @@ CFLAGS	Makefile	/^CFLAGS=-c -Wall$/;"	m
 COMMON_SORCES	Makefile	/^COMMON_SORCES=tictactoe.h$/;"	m
 EXECUTABLE1	Makefile	/^EXECUTABLE1=server$/;"	m
 EXECUTABLE2	Makefile	/^EXECUTABLE2=client$/;"	m
-NAME_SIZE	server.c	6;"	d	file:
+NAME_SIZE	server.c	11;"	d	file:
 OBJECT1	Makefile	/^OBJECT1=$(SOURCE1:.c=.o)$/;"	m
 OBJECT2	Makefile	/^OBJECT2=$(SOURCE2:.c=.o)$/;"	m
+SIZE_BUFFER	server.c	12;"	d	file:
 SOURCE1	Makefile	/^SOURCE1=server.c$/;"	m
 SOURCE2	Makefile	/^SOURCE2=client.c$/;"	m
-dostuff	server.c	/^void dostuff (int sock) {$/;"	f
+board	functions.h	/^char board[3][3];$/;"	v
+check_move	functions.h	/^int check_move(int line,int col) { \/\/ return 1 if move is legal$/;"	f
+check_winner	functions.h	/^int check_winner(char symbol) { \/\/ retur 1 if winner was found (change)$/;"	f
+display_board	functions.h	/^void display_board() {$/;"	f
+init	functions.h	/^void init() {$/;"	f
 main	client.c	/^int main (int argc,char *argv[] ) {$/;"	f
 main	server.c	/^int main(int argc, char *argv[]) {$/;"	f
+move	functions.h	/^void move(int line,int col,char symbol) {$/;"	f

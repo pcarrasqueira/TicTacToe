@@ -4,21 +4,30 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
+#include <errno.h>
+#include "functions.h"
 
-
-#define NAME_SIZE 20
+#define NAME_SIZE 15
+#define SIZE_BUFFER 5
 
 int main(int argc, char *argv[]) {
   
 
-	int sockfd, newsockfd, portno, clilen, pid, game, bytes_recv;
+	int sockfd, newsockfd, portno, clilen, pid, game, bytes_recv,bytes_sent,line,col,count, flag,aux,aux2;
 	struct sockaddr_in serv_addr, cli_addr;
 	char *client_name;
-	char choice;
+	char buffer[SIZE_BUFFER];
+	char choice,symbol,client_symbol;
 	
-	client_name=(char*)malloc(NAME_SIZE*sizeof(char));
+	
+	symbol='X';
+	client_symbol='O';
 	
 	game=0;
+
+	client_name=(char*)malloc(NAME_SIZE*sizeof(char));
+
 	
 	if (argc < 2) {
         	printf("ERROR : INVALID USAGE\n");
@@ -26,10 +35,10 @@ int main(int argc, char *argv[]) {
         	return -1;
         }
 
-	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	sockfd = socket(AF_INET,SOCK_STREAM,0);
 	
 	if (sockfd < 0){
-		printf("ERROR opening socket");
+		perror("ERROR opening socket");
 		return -1;
 	}
 
@@ -41,78 +50,198 @@ int main(int argc, char *argv[]) {
 	serv_addr.sin_port = htons(portno);
 
 	if (bind(sockfd, (struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0){
-        	printf("ERROR on binding");
+		perror("ERROR on binding\n");
 		return -1;
 	}
 
-	printf("RoosterNet Server\nDeveloped by PC\n");
 	
 	if(listen(sockfd,5)<0) {
-		printf("ERROR : FAILED TO LISTEN\n");
+		perror("ERROR : FAILED TO LISTEN\n");
 		return -1;
 	}
 
 	clilen = sizeof(cli_addr);
 
 	
-	while (game=0) {
- 		
+	printf("\n\nRoosterNet Server\nDeveloped by PC\n\n");
+	
+	do {
+ 		bzero(client_name,NAME_SIZE);
 		printf("Waiting for a chalenger...\n");
 		
 		newsockfd=accept(sockfd,(struct sockaddr *) &cli_addr, &clilen);
 		
 		if (newsockfd < 0){
-     			printf("ERROR on accept");
+     			perror("ERROR on accept");
 			return -1;
 		}
 		
-		memset(&client_name,0,sizeof(client_name)); // fill memory with constant bytes (0)
 		
-		bytes_recv=read(sock,client_name,NAME_SIZE);
+		bytes_recv=read(newsockfd,client_name,NAME_SIZE);
 		
 		if(bytes_recv<0) {
-			printf("ERROR : FAILED TO ACQUIRE DATA INFORMATION");
+			perror("ERROR : FAILED TO ACQUIRE DATA INFORMATION");
 			return -1;
 		}
 	
-		printf("New chalenger found : %s.\n",client_name);
+		printf("New chalenger found : %s\n",client_name);
 		printf("Do you want to play with this challenger (Y/N)?)\n");
-		scanf("%s",&choice);
-		toupper(choice);
+		scanf(" %c",&choice);
+		
+		bzero(buffer,SIZE_BUFFER);
+
+		if(choice=='Y' || choice=='y') {
+			strcpy(buffer,"01");
+			bytes_sent=write(newsockfd,buffer,SIZE_BUFFER);
+    			
+                        if(bytes_sent<0) {
+                        perror("ERROR : FAILED TO SEND DATA INFORMATION");
+                        return -1; 
+                        }
+			bzero(buffer,SIZE_BUFFER);
+			game=1;
+		}
+		else if(choice=='N' || choice=='n') {
+			strcpy(buffer,"00");
+
+			bytes_sent=write(newsockfd,buffer,SIZE_BUFFER);
+			
+			if(bytes_sent<0) {
+                        perror("ERROR : FAILED TO SEND DATA INFORMATION");
+                        return -1;
+              	 	}
+
+			close(newsockfd);
+			continue;
+			}
 	
-		if(strcmp(choice,"S");
-			game=1;	
+		else {
+			printf("Option not available\n");
+			return -1;
+			}
+		
+	} while(game==0);
+
+	init();
+	display_board();
+	
+	count=0;
+	flag=0;
+	aux=0;
+	aux2=0;
+
+	while (count<9) { 
+
+		if(flag==0) {
+
+			printf("Your move...\n");
+			printf("Line (1 to 3) : ");
+			scanf("%d",&line);
+			printf("Column (1 to 3) : ");
+			scanf("%d",&col);
+
+			move(line,col,symbol);
+			display_board();
+
+			buffer[0]=line+'0';
+			buffer[1]=col+'0';
+		
+			bytes_sent=write(newsockfd,buffer,SIZE_BUFFER);
+
+			if(bytes_sent<0) {
+				perror("ERROR : FAILED TO SEND DATA INFORMATION");
+				return -1;
+			}
+
+			bzero(buffer,SIZE_BUFFER);
+			count++;
+		} 
+		else {
+		
+			printf("\nThe challenger’s move...\n");
+			
+			bytes_recv=read(newsockfd,buffer,SIZE_BUFFER);
+
+			if(bytes_recv<0) {
+				perror("ERROR : FAILED TO ACQUIRE DATA INFORMATION");
+				return -1;
+			}
+			
+			line=buffer[0]-'0';
+			col=buffer[1]-'0';
+			move(line,col,client_symbol);
+			display_board();
+			count++;
+		}
+		
+		
+		if(count>4) { // min 5 moves to found a winner
+
+			aux=check_winner(symbol);
+			aux2=check_winner(client_symbol);
+			sleep(1);
+			if(aux==1) {
+			
+				printf("You won the game\n");
+
+				strcpy(buffer,"00");
+				bytes_sent=write(newsockfd,buffer,SIZE_BUFFER);
+				
+				if(bytes_sent<0) {
+					perror("ERROR : FAILED TO SEND DATA INFORMATION");
+					return -1; 
+				}
+				break;
+			}
+		
+			else if(aux2==1) {
+                 
+                                printf("You lost the game\n");
+
+                                strcpy(buffer,"01");
+                                bytes_sent=write(newsockfd,buffer,SIZE_BUFFER);
+                         
+                                if(bytes_sent<0) {
+                                        perror("ERROR : FAILED TO SEND DATA INFORMATION");
+                                        return -1;
+                                }
+                                break;
+                        }
+		}
+		
+		if(flag==1)
+			flag=0;
+		else
+			flag=1;
 		
 	}
 	
-	return 0;
-}
-
-/******** DOSTUFF() *********************
-There is a separate instance of this function 
-for each connection.  It handles all communication
-once a connnection has been established.
-
-
-
-void dostuff (int sock) {
-	int n;
-	char buffer[256];
-
-	bzero(buffer,256);
-	n = read(sock,buffer,255);
-	if (n < 0) {
-		printf("ERROR reading from socket");
-		return -1;
+	if(aux==0 && aux2==0) {
+		
+		printf("The game ends in a draw\n");
+		
+		strcpy(buffer,"11");
+                
+		bytes_sent=write(newsockfd,buffer,SIZE_BUFFER);
+                
+		if(bytes_sent<0) {
+                	perror("ERROR : FAILED TO SEND DATA INFORMATION");
+                        return -1;
+               	}
 	}
 	
-	printf("Here is the message: %s\n",buffer);
-	n = write(sock,"I got your message",18);
-	if (n < 0) {
-		printf("ERROR writing to socket");
+	
+	strcpy(buffer,"22");
+	bytes_sent=write(newsockfd,buffer,SIZE_BUFFER);
+	if(bytes_sent<0) {
+		perror("ERROR : FAILED TO SEND DATA INFORMATION");
 		return -1;
 	}
-}
 
-*/
+	close(sockfd);
+	close(newsockfd);
+	free(client_name);
+
+	return 0;
+}
 
