@@ -6,6 +6,8 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <unistd.h>
+
 #include "functions.h"
 
 #define NAME_SIZE 15
@@ -14,7 +16,7 @@
 int main(int argc, char *argv[]) {
   
 
-	int sockfd, newsockfd, portno, clilen, pid, game, bytes_recv,bytes_sent,line,col,count, flag,aux,aux2;
+	int sockfd, newsockfd, portno, clilen, game, bytes_recv,bytes_sent,line,col,count, flag,aux,aux2;
 	struct sockaddr_in serv_addr, cli_addr;
 	char *client_name;
 	char buffer[SIZE_BUFFER];
@@ -68,7 +70,7 @@ int main(int argc, char *argv[]) {
  		bzero(client_name,NAME_SIZE);
 		printf("Waiting for a chalenger...\n");
 		
-		newsockfd=accept(sockfd,(struct sockaddr *) &cli_addr, &clilen);
+		newsockfd=accept(sockfd,(struct sockaddr *)&cli_addr,&clilen);
 		
 		if (newsockfd < 0){
      			perror("ERROR on accept");

@@ -4,6 +4,8 @@
 #include <netinet/in.h>
 #include <netdb.h> 
 #include <stdlib.h>
+#include <unistd.h>
+
 #include "functions.h"
 
 #define SIZE_BUFFER 5
