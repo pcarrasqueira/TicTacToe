@@ -7,7 +7,7 @@ TicTacToe Multiplayer using Socket TCP programing
 
 /**********************************************************/
 -------------------------------------------------------------------
-status : In development
+status : Working/In development
 -----------------------
 
 
