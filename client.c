@@ -59,9 +59,8 @@ int main (int argc,char *argv[] ) {
 		return -1;
 	}
 
-	printf("\n\nRoosterNet Client\nDeveloped by PC\n\n");
-
-
+	system("clear");
+	client_header();
     	printf("Enter your Name : ");
 
     	scanf("%s",name);
@@ -90,13 +89,17 @@ int main (int argc,char *argv[] ) {
 	
 	else if(strcmp(buffer,"01")==0) {
 		printf("That defender accepted you’re challenge.\n");
+		sleep(1);
+		system("clear");
 	}
 	
 	count=0;
 	flag=1;
 	
 	init();
-
+	client_header();
+	display_board();
+	
 	while(count<9) {
 
 		if(flag==1) {
@@ -114,22 +117,26 @@ int main (int argc,char *argv[] ) {
 
 			line=buffer[0]-'0';
 			col=buffer[1]-'0';
-
-			printf("LINE AND COL : %d %d \n",line,col);
 		
 			move(line,col,serv_symbol);
+			system("clear");
+			client_header();
 			display_board();
 			count++;
 		}
-		else if(flag==0) {
+		else {
 
-			printf("Your move...\n");
-			printf("Line (1 to 3) : ");
-			scanf("%d",&line);
-			printf("Column (1 to 3) : ");
-			scanf("%d",&col);
-
+			do {
+				printf("Your move...\n");
+				printf("Line (1 to 3) : ");
+				scanf("%d",&line);
+				printf("Column (1 to 3) : ");
+				scanf("%d",&col);
+			}while(check_move(line,col)==0);
+			
+			system("clear");
 			move(line,col,symbol);
+			client_header();
 			display_board();
 			bzero(buffer,SIZE_BUFFER);
 			

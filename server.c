@@ -62,9 +62,8 @@ int main(int argc, char *argv[]) {
 
 	clilen = sizeof(cli_addr);
 
-	
-	printf("\n\nRoosterNet Server\nDeveloped by PC\n\n");
-	
+	system("clear");
+	server_header();
 	do {
  		bzero(client_name,NAME_SIZE);
 		printf("Waiting for a chalenger...\n");
@@ -100,6 +99,7 @@ int main(int argc, char *argv[]) {
                         }
 			bzero(buffer,SIZE_BUFFER);
 			game=1;
+			system("clear");
 		}
 		else if(choice=='N' || choice=='n') {
 			strcpy(buffer,"00");
@@ -123,6 +123,7 @@ int main(int argc, char *argv[]) {
 	} while(game==0);
 
 	init();
+	server_header();
 	display_board();
 	
 	count=0;
@@ -133,14 +134,18 @@ int main(int argc, char *argv[]) {
 	while (count<9) { 
 
 		if(flag==0) {
-
+	
+			do{
 			printf("Your move...\n");
 			printf("Line (1 to 3) : ");
 			scanf("%d",&line);
 			printf("Column (1 to 3) : ");
 			scanf("%d",&col);
-
+			}while(check_move(line,col)==0);
+			
 			move(line,col,symbol);
+			system("clear");
+			server_header();
 			display_board();
 
 			buffer[0]=line+'0';
@@ -170,16 +175,19 @@ int main(int argc, char *argv[]) {
 			line=buffer[0]-'0';
 			col=buffer[1]-'0';
 			move(line,col,client_symbol);
+			system("clear");
+			server_header();
 			display_board();
 			count++;
 		}
+
 		
 		
 		if(count>4) { // min 5 moves to found a winner
 
 			aux=check_winner(symbol);
 			aux2=check_winner(client_symbol);
-			sleep(1);
+			
 			if(aux==1) {
 			
 				printf("You won the game\n");
@@ -207,6 +215,17 @@ int main(int argc, char *argv[]) {
                                 }
                                 break;
                         }
+			else {
+				strcpy(buffer,"22");
+                                bytes_sent=write(newsockfd,buffer,SIZE_BUFFER);
+
+                                if(bytes_sent<0) {
+                                        perror("ERROR : FAILED TO SEND DATA INFORMATION");
+                                        return -1;
+                                }
+			}
+
+				
 		}
 		
 		if(flag==1)

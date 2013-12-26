@@ -13,9 +13,20 @@ void init() {
 } 
 
 
-void display_board() {
+void server_header() {
+	printf("*********************************************\n");
+        printf("*    RoosterNet Server Developed by PC      *\n");
+	printf("*********************************************\n\n");
+}
 
-	printf("\n********** Tic-Tac-Toe Board **********\n");
+
+void client_header() {
+	printf("*********************************************\n");
+        printf("*    RoosterNet Client Developed by PC      *\n");
+	printf("*********************************************\n\n");
+}
+void display_board() {
+	printf("\n\n************* Tic-Tac-Toe Board *************\n\n");
 	int i,j;
 	for (i=0; i<3; i++) {
 		printf("\t\t");
@@ -73,15 +84,22 @@ int check_winner(char symbol) { // retur 1 if winner was found (change)
 
 int check_move(int line,int col) { // return 1 if move is legal
 
-	int i,j;
-        for (i=1; i<4; i++) {
-                for (j=1;j<4;j++) {
-                if(i==line && j==col)
-                        if(board[i][j]=='-')
-				return 1;
-			else	
-				return 0;
-		}
-          }
+	if(line >3 || col > 3 || line <1 || col < 1) {
+		printf("Ilegal move, please play again.\n");
+                return 0;
+	}
 
+	int i,j;
+        for (i=0; i<3; i++) {
+                for (j=0;j<3;j++) {
+               		if(i==line-1 && j==col-1) {
+                        	if(board[i][j]=='-')
+					return 1;
+				else{
+					printf("Ilegal move, please play again.\n");
+					return 0;
+				}
+			}
+          	}	
+	}
 }
