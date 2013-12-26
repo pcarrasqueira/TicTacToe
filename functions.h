@@ -31,7 +31,7 @@ void display_board() {
 	for (i=0; i<3; i++) {
 		printf("\t\t");
 		for (j=0;j<3;j++)
-			printf("\t%c ",board[i][j]);
+			printf("%c  ",board[i][j]);
 			printf("\n");
 	}	
 
