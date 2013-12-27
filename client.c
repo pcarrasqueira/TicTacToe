@@ -191,7 +191,7 @@ int main (int argc,char *argv[] ) {
 	}
 
 	if(strcmp(buffer,"11")==0)
-		printf("The game ends in a draw\n");
+		printf("The game ended with a draw\n");
 
 
 	close(sockfd);

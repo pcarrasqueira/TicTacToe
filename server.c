@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
 		}
 	
 		printf("New chalenger found : %s\n",client_name);
-		printf("Do you want to play with this challenger (Y/N)?)\n");
+		printf("Do you want to play with this challenger (Y/N)? : ");
 		scanf(" %c",&choice);
 		
 		bzero(buffer,SIZE_BUFFER);
@@ -239,7 +239,7 @@ int main(int argc, char *argv[]) {
 	
 	if(aux==0 && aux2==0) {
 		
-		printf("The game ends in a draw\n");
+		printf("The game ended with a draw\n");
 		
 		strcpy(buffer,"11");
                 
